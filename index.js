@@ -1,7 +1,8 @@
 const app = require('express')()
 const port = 8080
 const swaggerUi = require('swagger-ui-express')
-const swaggerDoc = require('./docs/swagger.json')
+const yamljs = require('yamljs')
+const swaggerDoc = yamljs.load('./docs/swagger.yaml')
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
 const courses = [
@@ -19,7 +20,11 @@ app.get('/courses', (req, res) =>{
 });
 
 app.get('/courses/:id', (req, res) =>{
-    res.send(courses[req.params.id])
+    if(typeof courses[req.params.id - 1 ] === "undefined"){
+        return res.status(404).send({error: "Course not found"})
+    }
+
+    res.send(courses[req.params.id-1])
 });
 
 app.listen(port, () => {
