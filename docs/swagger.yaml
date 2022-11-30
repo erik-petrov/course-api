@@ -1,0 +1,166 @@
+swagger: '2.0'
+info:
+  title: Course API
+  version: '1.0'
+  description: >-
+    ### This is a Swagger UI for our Course API  
+    
+    
+    ### Error handling
+    
+    Errors are presented using the HTTP status codes 400-599. The response include a more detailed
+    explanation about the error in the body.
+    
+    
+    ```
+    
+    {
+      "error": "Cleartext explanation of the error that occurred"
+    }
+    
+    ```
+    
+    
+    ### Generic API errors
+    
+    These error responses can be returned by any of the described endpoints.
+    
+    
+    | HTTP status  |  Description |
+    
+    |---|---|
+    
+    | 400| Bad input parameters or invalid request. More information can be found in the response body.
+    
+    | 401| The consumer does not have access to the requested resource or the provided token is not valid.
+    
+    | 404| The requested resource can not be found or the user does not have access to the resource.
+    
+    | 5XX| A server error has occurred while processing the request.
+paths:
+  /courses:
+    get:
+      tags:
+        - courses
+      responses:
+        '200':
+          description: List of courses
+          schema:
+            type: array
+            items:
+              type: string
+          examples:
+            application/json: |-
+              {
+                  "Course name",
+                  "Course name 2"
+              }
+      summary: Returns courses from the app
+      description: Returns a list of all courses that are in the app
+    post:
+      consumes:
+        - application/json
+      tags:
+        - new-course
+      parameters:
+        -
+          name: body
+          description: A new course to be created
+          schema:
+            $ref: '#/definitions/new-course'
+          in: body
+          required: true
+      responses:
+        '201':
+          description: New course created
+          schema:
+            $ref: '#/definitions/new-course'
+          examples:
+            application/json:
+              name: Course name
+              price: 29.99
+        '400':
+          description: One or all params are missing
+          schema:
+            $ref: '#/definitions/error'
+          examples:
+            application/json:
+              error: One or all params are missing
+      summary: Creates a course
+      description: ' Creates a new course'
+  '/courses/{id}':
+    get:
+      tags:
+        - details
+      responses:
+        '200':
+          description: Get full details of a course
+          schema:
+            $ref: '#/definitions/course'
+          examples:
+            application/json:
+              id: 1
+              name: Course name
+              price: 29.99
+        '404':
+          description: Course was not found in games array
+          schema:
+            $ref: '#/definitions/error'
+          examples:
+            application/json: '{error: "Course not found"}'
+      summary: Get full details of a course
+      description: Returns full details of a given id course
+    parameters:
+      -
+        name: id
+        description: |
+          Id of the course
+        in: path
+        required: true
+        type: integer
+definitions:
+  error:
+    title: Root Type for error
+    description: ''
+    type: object
+    properties:
+      error:
+        type: string
+    example:
+      error: Error message
+  course:
+    title: Root Type for course
+    description: ''
+    type: object
+    properties:
+      id:
+        format: int32
+        description: Id of the course
+        type: integer
+      name:
+        description: Name of the course
+        type: string
+      price:
+        format: double
+        description: Price of the course
+        type: number
+    example:
+      id: 1
+      name: Course name
+      price: 29.99
+  new-course:
+    title: Root Type for new-course
+    description: ''
+    required:
+      - price
+      - name
+    type: object
+    properties:
+      name:
+        type: string
+      price:
+        format: float
+        type: number
+    example:
+      name: Course name
+      price: 29.99
