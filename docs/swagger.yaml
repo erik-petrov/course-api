@@ -92,6 +92,14 @@ paths:
     get:
       tags:
         - details
+      parameters:
+        -
+          name: body
+          description: Course to delete
+          schema:
+            $ref: '#/definitions/delete-course'
+          in: body
+          required: true
       responses:
         '200':
           description: Get full details of a course
@@ -102,6 +110,12 @@ paths:
               id: 1
               name: Course name
               price: 29.99
+        '204':
+          description: Course deleted
+          schema:
+            type: array
+            items:
+              type: string
         '404':
           description: Course was not found in games array
           schema:
@@ -110,6 +124,9 @@ paths:
             application/json: '{error: "Course not found"}'
       summary: Get full details of a course
       description: Returns full details of a given id course
+    delete:
+      summary: Delete a course
+      description: Delete a course by id
     parameters:
       -
         name: id
@@ -164,3 +181,14 @@ definitions:
     example:
       name: Course name
       price: 29.99
+  delete-course:
+    description: ''
+    required:
+      - id
+    type: object
+    properties:
+      id:
+        description: ''
+        type: integer
+    example:
+      id: 1

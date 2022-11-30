@@ -25,7 +25,15 @@ app.get('/courses', (req, res) =>{
     res.send(courses)
 });
 
+app.delete('/courses/:id',(req,res) => {
+    if(typeof courses[req.params.id - 1 ] === "undefined"){
+        return res.status(404).send({error: "Course not found"})
+    }
 
+    courses.splice(req.params.id - 1,1)
+
+    res.status(204).send({error:"No content"})
+})
 
 app.post('/courses',(req,res) => {
     if (!req.body.name || !req.body.price){
